@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 
 @dataclass
@@ -9,21 +9,15 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
+    MESSAGE = ('Тип тренировки: {}; '
+               'Длительность: {:.3f} ч.; '
+               'Дистанция: {:.3f} км; '
+               'Ср. скорость: {:.3f} км/ч; '
+               'Потрачено ккал: {:.3f}.')
 
     def get_message(self) -> None:
-        message_constant = (
-            'Тип тренировки: {}; '
-            'Длительность: {} ч.; '
-            'Дистанция: {} км; '
-            'Ср. скорость: {} км/ч; '
-            'Потрачено ккал: {}.')
-        t = (
-            self.training_type,
-            '{0:.3f}'.format(self.duration),
-            '{0:.3f}'.format(self.distance),
-            '{0:.3f}'.format(self.speed),
-            '{0:.3f}'.format(self.calories))
-        return message_constant.format(*t)
+        t = asdict(self)
+        return self.MESSAGE.format(*t.values())
 
 
 class Training:
@@ -140,24 +134,14 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    parameter = [0, 0, 0, 0, 0]
-    for i in range(len(data)):
-        parameter[i] = data[i]
     parameters_train = {
-        'SWM': Swimming(parameter[0],
-                        parameter[1],
-                        parameter[2],
-                        parameter[3],
-                        parameter[4]),
-        'RUN': Running(parameter[0], parameter[1], parameter[2]),
-        'WLK': SportsWalking(parameter[0],
-                             parameter[1],
-                             parameter[2],
-                             parameter[3])}
-    try:
-        return parameters_train[workout_type]
-    except KeyError:
-        print('Ошибка чтения данных с датчиков')
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking}
+    if workout_type in parameters_train:
+        return parameters_train[workout_type](*data)
+    else:
+        pass
 
 
 def main(training: Training) -> None:
@@ -167,7 +151,6 @@ def main(training: Training) -> None:
         print(message_train.get_message())
     except AttributeError:
         print('Данный тип тренировки неизвестен')
-    pass
 
 
 if __name__ == '__main__':
@@ -186,7 +169,10 @@ if __name__ == '__main__':
             workout_type = packages[i][0]
             data = packages[i][1]
             if packages[i][1][0] > 0:
-                training = read_package(workout_type, data)
+                try:
+                    training = read_package(workout_type, data)
+                except TypeError:
+                    pass
                 try:
                     main(training)
                 except ZeroDivisionError:
