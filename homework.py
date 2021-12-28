@@ -141,16 +141,13 @@ def read_package(workout_type: str, data: list) -> Training:
     if workout_type in parameters_train:
         return parameters_train[workout_type](*data)
     else:
-        pass
+        raise ValueError
 
 
 def main(training: Training) -> None:
     """Главная функция."""
-    try:
-        message_train = training.show_training_info()
-        print(message_train.get_message())
-    except AttributeError:
-        print('Данный тип тренировки неизвестен')
+    message_train = training.show_training_info()
+    print(message_train.get_message())
 
 
 if __name__ == '__main__':
@@ -171,12 +168,11 @@ if __name__ == '__main__':
             if packages[i][1][0] > 0:
                 try:
                     training = read_package(workout_type, data)
-                except TypeError:
-                    pass
-                try:
                     main(training)
+                except (ValueError, TypeError):
+                    print('Не определен тип тренировки')
                 except ZeroDivisionError:
-                    print('Ошибка датчиков')
+                    print('Датчики не исправны')
             else:
                 print('Вы еще не начали тренироваться=)')
         else:
