@@ -4,6 +4,23 @@
 Реализовать программный модуль по методологии ООП для расчёта и отображения информации
 о прошедшей тренировке по данным от блока датчиков.
 
+## Запуск
+1. Клонировать репозиторий
+```bash
+$ git clone git@github.com:akchau/fitness_tracker_python.git
+$ cd fitness_tracker_python
+```
+2. Установить виртуальное окружение
+```bash
+$ python -m venv venv
+$ source venv/Scripts/activate
+```
+3. Запустить
+```bash
+$ python tracker.py
+```
+
+
 ## Базовый класс
 ```python
 class Training
