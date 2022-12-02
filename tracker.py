@@ -172,13 +172,17 @@ def read_package(workout_type: str, data: list) -> Training:
         raise ValueError("Тренировка не найдена")
 
 
-def main(training: Training) -> None:
-    """Главная функция."""
-    message_train = training.show_training_info()
-    print(message_train.get_message())
+def output(training: Training) -> None:
+    """
+    Главная функция. Метод show_training_info() есть у базового класса
+    тренировки. Он вернет экземпляр класса InfoMessage. А метод get_message()
+    вернет строку с подставленными данными тренировки.
+    """
+    message_train = training.show_training_info()  # экземпляр InfoMessage
+    print(message_train.get_message())  # печатаем сообщение встроенным методом
 
 
-if __name__ == "__main__":
+def main():
     # данные для тестирования программы локально.
     packages = [
         ("SWM", [720, 1, 80, 25, 40]),  # передаем валидные данные для плавания
@@ -198,8 +202,8 @@ if __name__ == "__main__":
                 try:
                     # создаем экземпляр с переданнми данными тренировки
                     training = read_package(workout_type, data)
-                    #  передаем тип тренировки в главную функцию
-                    main(training)
+                    #  передаем экземпляр тренировки в функцию-выведет
+                    output(training)
                 except (ValueError, TypeError):
                     print("Не определен тип тренировки")
                 except ZeroDivisionError:
@@ -208,3 +212,7 @@ if __name__ == "__main__":
                 print("Вы еще не начали тренироваться=)")
         else:
             print("Не определен тип тренировки или датчики неисправны")
+
+
+if __name__ == "__main__":
+    main()
